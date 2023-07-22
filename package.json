@@ -1,0 +1,21 @@
+{
+  "name": "bolojonback",
+  "version": "1.0.0",
+  "description": "This is the backend side of bolajon clinicks management system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "author": "Ibrohimdev",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-express": "^2.25.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "graphql": "^15.8.0",
+    "moment": "^2.29.2",
+    "pg": "^8.7.3"  
+  }
+}
