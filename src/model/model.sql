@@ -82,7 +82,7 @@ CREATE TABLE daily_patients(
     is_active boolean not null
 );
 
-CREATE TABLE npm run dev
+CREATE TABLE daily_services
 (
     statistics_id text PRIMARY KEY,
     statistics_of TIMESTAMP not null,
