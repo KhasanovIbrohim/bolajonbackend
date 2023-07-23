@@ -108,6 +108,7 @@ module.exports = {
         time: global => global.statistics_of,
         patient: global => global.statistics_patient,
         status: global => global.statistics_status,
+        branch: global => global.statistics_branch,
         isActive: global => global.is_active
     },
     Dailyservices: {
@@ -117,6 +118,7 @@ module.exports = {
         status: global => global.statistics_status,
         staff: global => global.service_staff,
         patient: global => global.service_patient,
+        branch: global => global.statistics_branch,
         isActive: global => global.is_active,
     },
     Mutation: {
