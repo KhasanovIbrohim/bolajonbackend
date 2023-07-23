@@ -79,16 +79,17 @@ CREATE TABLE daily_patients(
     statistics_of TIMESTAMP not null,
     statistics_patient text REFERENCES patients(patient_id),
     statistics_status VARCHAR(64) not null,
+    statistics_branch text REFERENCES branch(branch_id),
     is_active boolean not null
 );
 
-CREATE TABLE daily_services
-(
+CREATE TABLE daily_services(
     statistics_id text PRIMARY KEY,
     statistics_of TIMESTAMP not null,
     statistics_service text REFERENCES services(service_id),
     statistics_status VARCHAR(64) not null,
     service_staff text REFERENCES staff(staff_id),
     service_patient text REFERENCES patients(patient_id),
+    statistics_branch text REFERENCES branch(branch_id),
     is_active boolean not null
 );

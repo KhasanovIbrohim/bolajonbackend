@@ -82,6 +82,7 @@ module.exports = gql`
         time: String!
         patient: ID!
         status: String!
+        branch: ID!
         isActive: Boolean!
     }
 
@@ -91,6 +92,7 @@ module.exports = gql`
         status: String!
         staff: ID!
         patient: ID!
+        branch: ID!
         isActive: Boolean!
     }
 
@@ -115,8 +117,8 @@ module.exports = gql`
         newServices(name: String! price: Int! isActive: Boolean!): String
         newSchedule(time: String! staff: ID! isActive: Boolean!): String
         newMedecines(name: String! price: Int! count: Int! isActive: Boolean!): String
-        newDailyPatients(time: String! patient: ID! isActive: Boolean!): String
-        newDailyServices(time: String! service: ID! staff: ID! patient: ID! isActive: Boolean!): String
+        newDailyPatients(time: String! patient: ID! branch: ID! isActive: Boolean!): String
+        newDailyServices(time: String! service: ID! staff: ID! patient: ID! branch: ID! isActive: Boolean!): String
 
         updateBranch(name: String! time: String! id: ID!): String
         updateUser(name: String! secondname: String! phone: String! password: String! id: ID!): String
@@ -125,7 +127,7 @@ module.exports = gql`
         updateService(name: String! price: Int! id: ID!): String
         updateSchedule(time: String! task: String! status: String! id: ID!): String
         updateMedecines(name: String! price: Int! count: Int! id: ID!): String
-        updateDailyPatientsStatus(id: ID! status: String!): String
-        updateDailyServiceStatus(id: ID! status: String!): String
+        updateDailyPatientsStatus(id: ID! status: String! branch: String!): String
+        updateDailyServiceStatus(id: ID! status: String! branch: String!): String
     }
 `

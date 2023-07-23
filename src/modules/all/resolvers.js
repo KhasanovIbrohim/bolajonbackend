@@ -160,14 +160,14 @@ module.exports = {
             model.new_medecines(id, name, price, count, isActive)
             return "New Medecine Created!"
         },
-        newDailyPatients: async(_, { time, patient, isActive }, ) => {
+        newDailyPatients: async(_, { time, patient, branch, isActive }, ) => {
             let id = generateID()
-            model.new_daily_patients(id, time, patient, isActive)
+            model.new_daily_patients(id, time, patient, branch, isActive)
             return "New Daily Patient Added!"
         },
-        newDailyServices: async(_, { time, service, staff, patient, isActive }, ) => {
+        newDailyServices: async(_, { time, service, staff, patient, branch, isActive }, ) => {
             let id = generateID()
-            model.new_daily_services(id, time, service, staff, patient, isActive)
+            model.new_daily_services(id, time, service, staff, patient, branch, isActive)
             return "New Daily Service Added!"
         },
         updateBranch: async(_, { name, time, id }, ) => {

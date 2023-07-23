@@ -94,13 +94,13 @@ const NEW_MEDECINES = `
 `
 
 const NEW_DAILY_PATIENTS = `
-    INSERT INTO daily_patients(statistics_id, statistics_of, statistics_patient, statistics_status, is_active) 
-    VALUES($1, $2, $3, 'WAITING', $4);
+    INSERT INTO daily_patients(statistics_id, statistics_of, statistics_patient, statistics_status, statistics_branch, is_active) 
+    VALUES($1, $2, $3, 'WAITING', $4, $5);
 `
 
 const NEW_DAILY_SERVICES = `
-    INSERT INTO daily_services(statistics_id, statistics_of, statistics_service, statistics_status, service_staff, service_patient, is_active) 
-    VALUES($1, $2, $3, 'WAITING', $4, $5, $6);
+    INSERT INTO daily_services(statistics_id, statistics_of, statistics_service, statistics_status, service_staff, service_patient, statistics_branch, is_active) 
+    VALUES($1, $2, $3, 'WAITING', $4, $5, $6, $7);
 `
 
 const UPDATE_BRANCH = `
@@ -165,19 +165,19 @@ const new_patients = (id, name, secondname, lastname, phone, gender, home, age, 
 const new_services = (id, name, price, isActive) => fetchAll(NEW_SERVICES, id, name, price, isActive)
 const new_schedule = (id, time, staff, isActive) => fetchAll(NEW_SHEDULE, id, time, staff, isActive)
 const new_medecines = (id, name, price, count, isActive) => fetchAll(NEW_MEDECINES, id, name, price, count, isActive)
-const new_daily_patients = (id, time, patient, isActive) => fetchAll(NEW_DAILY_PATIENTS, id, time, patient, isActive)
-const new_daily_services = (id, time, service, staff, patient, isActive) => fetchAll(NEW_DAILY_SERVICES, id, time, service, staff, patient, isActive)
+const new_daily_patients = (id, time, patient, branch, isActive) => fetchAll(NEW_DAILY_PATIENTS, id, time, patient, branch, isActive)
+const new_daily_services = (id, time, service, staff, patient, branch, isActive) => fetchAll(NEW_DAILY_SERVICES, id, time, service, staff, patient, branch, isActive)
 
 const update_branch = (name, time, id) => fetchAll(UPDATE_BRANCH, name, time, id)
 const update_user = (name, secondname, phone, password, id) => fetchAll(UPDATE_USERS, name, secondname, phone, password, id)
 const update_staff = (name, secondname, phone, password, branch, id) => fetchAll(UPDATE_STAFF, name, secondname, phone, password, branch, id)
 const update_patient = (name, surname, lastname, phone, home, age, id) => fetchAll(UPDATE_PATIENTS, name, surname, lastname, phone, home, age, id)
 const update_service = (name, price, id) => fetchAll(UPDATE_SERVICES, name, price, id)
-const update_schedule = (time, task, status, id) => fetchAll(UPDATE_SCHEDULE, time, task, status, id)
-const update_medecine = (name, price, count, id) => fetchAll(UPDATE_MEDECINES, name, price, count, id)
+const update_schedule = (time, task, status, branch, id) => fetchAll(UPDATE_SCHEDULE, time, task, status, branch, id)
+const update_medecine = (name, price, count, branch, id) => fetchAll(UPDATE_MEDECINES, name, price, count, branch, id)
 
-const update_daily_patients_status = (id, status) => fetchAll(UPDATE_DAILY_PATIENTS_STATUS, id, status)
-const update_daily_service_status = (id, status) => fetchAll(UPDATE_DAILY_SERVICE_STATUS, id, status)
+const update_daily_patients_status = (id, status, branch) => fetchAll(UPDATE_DAILY_PATIENTS_STATUS, id, status, branch)
+const update_daily_service_status = (id, status, branch) => fetchAll(UPDATE_DAILY_SERVICE_STATUS, id, status, branch)
 
 module.exports = {
     branch,

@@ -19,7 +19,7 @@ module.exports = {
     },
     GET_MONTHLY_SERVICE: async(req, res) => {
         const client = await pool.connect()
-        const {startOfDayFormatted, endOfDayFormatted, token} = req.body
+        const {startOfDayFormatted, endOfDayFormatted, token, branch} = req.body
         const { rows: service } = await client.query(`
             SELECT 
             d.statistics_id as id,
@@ -46,14 +46,15 @@ module.exports = {
             SELECT staff_status
             FROM staff
             WHERE staff_id = $3 
-            ) IN ('ADMIN', 'SUPER_ADMIN');
-        `, [startOfDayFormatted, endOfDayFormatted, token])
+            ) IN ('ADMIN', 'SUPER_ADMIN')
+            AND d.statistics_branch = (SELECT branch_id FROM branch WHERE branch_id = $4);
+        `, [startOfDayFormatted, endOfDayFormatted, token, branch])
         client.release()
         res.send(service)
     },
     GET_MONTHLY_PATIENTS: async(req, res) => {
         const client = await pool.connect()
-        const {startOfDayFormatted, endOfDayFormatted, token} = req.body
+        const {startOfDayFormatted, endOfDayFormatted, token, branch} = req.body
         const { rows: patients } = await client.query(`
             SELECT
             d.statistics_id as id,
@@ -79,6 +80,7 @@ module.exports = {
             FROM staff
             WHERE staff_id = $3
             ) IN ('ADMIN', 'SUPER_ADMIN')
+            AND d.statistics_branch = (SELECT branch_id FROM branch WHERE branch_id = $4)
         GROUP BY
             d.statistics_id,
             d.statistics_of + INTERVAL '5 hours',
@@ -91,24 +93,24 @@ module.exports = {
             p.patient_home,
             p.patient_age,
             p.patient_gender;
-        `, [startOfDayFormatted, endOfDayFormatted, token])
+        `, [startOfDayFormatted, endOfDayFormatted, token, branch])
         client.release()
         res.send(patients)
     },
     GET_MONTHLY_MONEY: async(req, res) => {
         const client = await pool.connect()
-        const {startOfDayFormatted, endOfDayFormatted, token} = req.body
+        const {startOfDayFormatted, endOfDayFormatted, token, branch} = req.body
         const { rows: money } = await client.query(`
             SELECT SUM(s.service_price) as overall, $1::timestamp + INTERVAL '5 hours' as from, $2::timestamp + INTERVAL '5 hours' as to, AGE($2::timestamp, $1::timestamp) as time 
             FROM daily_services d JOIN services s ON d.statistics_service = s.service_id WHERE d.statistics_of >= $1::timestamp
-            AND d.statistics_of < $2::timestamp AND (SELECT staff_status FROM staff WHERE staff_id = $3) = 'ADMIN' OR (SELECT staff_status FROM staff WHERE staff_id = $3) = 'SUPER_ADMIN';
-        `, [startOfDayFormatted, endOfDayFormatted, token])
+            AND d.statistics_of < $2::timestamp AND (SELECT staff_status FROM staff WHERE staff_id = $3) = 'ADMIN' OR (SELECT staff_status FROM staff WHERE staff_id = $3) = 'SUPER_ADMIN' AND d.statistics_branch = (SELECT branch_id FROM branch WHERE branch_id = $4);
+        `, [startOfDayFormatted, endOfDayFormatted, token, branch])
         client.release()
         res.send(money)
     },
     SEARCH: async(req, res) => {
         const client = await pool.connect()
-        const {text, startOfDayFormatted, endOfDayFormatted, token} = req.body
+        const {text, startOfDayFormatted, endOfDayFormatted, token, branch} = req.body
         const { rows: patients } = await client.query(`
         SELECT
         d.statistics_of + INTERVAL '5 hours' as time,
@@ -136,6 +138,7 @@ module.exports = {
         ) IN ('ADMIN', 'SUPER_ADMIN')
         AND
         p.patient_name ILIKE '${text}%' 
+        AND d.statistics_branch = (SELECT branch_id FROM branch WHERE branch_id = $4)
         OR 
         p.patient_surname ILIKE '${text}%'
         AND d.statistics_of >= $1::timestamp
@@ -145,6 +148,7 @@ module.exports = {
         FROM staff
         WHERE staff_id = $3
         ) IN ('ADMIN', 'SUPER_ADMIN')
+        AND d.statistics_branch = (SELECT branch_id FROM branch WHERE branch_id = $4)
         GROUP BY
         d.statistics_of + INTERVAL '5 hours',
         d.statistics_patient,
@@ -156,13 +160,13 @@ module.exports = {
         p.patient_home,
         p.patient_age,
         p.patient_gender;
-        `, [startOfDayFormatted, endOfDayFormatted, token])
+        `, [startOfDayFormatted, endOfDayFormatted, token, branch])
         client.release()
         res.send(patients)
     },
     SEARCH_SERVICE: async(req, res) => {
         const client = await pool.connect()
-        const {text, startOfDayFormatted, endOfDayFormatted, token} = req.body
+        const {text, startOfDayFormatted, endOfDayFormatted, token, branch} = req.body
         const { rows: service } = await client.query(`
             SELECT 
             d.statistics_id as id,
@@ -190,7 +194,8 @@ module.exports = {
             FROM staff
             WHERE staff_id = $3
             ) IN ('ADMIN', 'SUPER_ADMIN') AND
-            p.patient_name ILIKE '${text}%' 
+            p.patient_name ILIKE '${text}%'
+            AND d.statistics_branch = (SELECT branch_id FROM branch WHERE branch_id = $4) 
             OR 
             p.patient_surname ILIKE '${text}%'
             AND d.statistics_of >= $1::timestamp
@@ -199,8 +204,9 @@ module.exports = {
             SELECT staff_status
             FROM staff
             WHERE staff_id = $3
-            ) IN ('ADMIN', 'SUPER_ADMIN');
-        `, [startOfDayFormatted, endOfDayFormatted, token])
+            ) IN ('ADMIN', 'SUPER_ADMIN')
+            AND d.statistics_branch = (SELECT branch_id FROM branch WHERE branch_id = $4);
+        `, [startOfDayFormatted, endOfDayFormatted, token, branch])
         client.release()
         res.send(service)
     },
